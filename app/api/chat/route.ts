@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     analyze?: boolean;
   };
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
 
   // If no API key, use deterministic fallback
   if (!apiKey) {
@@ -35,30 +35,28 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Use Claude API
+  // Use Groq API
   try {
     const systemPrompt = analyze ? ANALYSIS_PROMPT : SYSTEM_PROMPT;
-    const claudeMessages = analyze
+    const groqMessages = analyze
       ? [{ role: "user" as const, content: messages.map((m) => `${m.role}: ${m.content}`).join("\n") }]
       : messages.map((m) => ({ role: m.role, content: m.content }));
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
+        "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "llama-3.3-70b-versatile",
         max_tokens: 1024,
-        system: systemPrompt,
-        messages: claudeMessages,
+        messages: [{ role: "system", content: systemPrompt }, ...groqMessages],
       }),
     });
 
     const data = await response.json();
-    const text = data.content?.[0]?.text || "I'm here to listen. Please continue.";
+    const text = data.choices?.[0]?.message?.content || "I'm here to listen. Please continue.";
 
     if (analyze) {
       try {
