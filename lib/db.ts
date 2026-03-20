@@ -1,10 +1,15 @@
-import Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
-import path from "path";
 
-const dbPath = path.join(process.cwd(), "local.db");
-const sqlite = new Database(dbPath);
-sqlite.pragma("journal_mode = WAL");
+function getDb() {
+  const url = process.env.DATABASE_URL;
+  if (!url) throw new Error("DATABASE_URL is not set");
+  return drizzle(neon(url), { schema });
+}
 
-export const db = drizzle(sqlite, { schema });
+export const db = new Proxy({} as ReturnType<typeof getDb>, {
+  get(_, prop) {
+    return getDb()[prop as keyof ReturnType<typeof getDb>];
+  },
+});
