@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* ─── Color palette extracted from app screenshots ─────────────────────────── */
+:root {
+  /* surfaces */
+  --background:        #070b13;
+  --foreground:        #dde6ff;
+  --card:              #0c1120;
+  --card-foreground:   #dde6ff;
+  --popover:           #0c1120;
+  --popover-foreground:#dde6ff;
+
+  /* brand */
+  --primary:           #3a7cff;
+  --primary-foreground:#ffffff;
+
+  /* secondary / muted */
+  --secondary:         #111827;
+  --secondary-foreground: rgba(221,230,255,0.6);
+  --muted:             #111827;
+  --muted-foreground:  rgba(221,230,255,0.4);
+
+  /* accent = same blue glow */
+  --accent:            rgba(58,124,255,0.12);
+  --accent-foreground: #dde6ff;
+
+  /* state */
+  --destructive:       #ef4444;
+  --destructive-foreground: #fff;
+
+  /* borders / inputs */
+  --border:  rgba(255,255,255,0.07);
+  --input:   rgba(255,255,255,0.06);
+  --ring:    rgba(58,124,255,0.45);
+
+  --radius: 14px;
+}
+
+/* ─── Tailwind v4 theme mapping ─────────────────────────────────────────────── */
+@theme inline {
+  --color-background:         var(--background);
+  --color-foreground:         var(--foreground);
+  --color-card:               var(--card);
+  --color-card-foreground:    var(--card-foreground);
+  --color-popover:            var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary:            var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary:          var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:              var(--muted);
+  --color-muted-foreground:   var(--muted-foreground);
+  --color-accent:             var(--accent);
+  --color-accent-foreground:  var(--accent-foreground);
+  --color-destructive:        var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border:             var(--border);
+  --color-input:              var(--input);
+  --color-ring:               var(--ring);
+
+  /* legacy aliases kept for old components */
+  --color-card-bg:            var(--card);
+  --color-card-border:        var(--border);
+  --color-input-bg:           var(--input);
+  --color-input-border:       var(--border);
+  --color-primary-hover:      color-mix(in srgb, var(--primary) 85%, #000);
+  --color-accent-teal:        #00d4aa;
+
+  --font-sans: "Inter", system-ui, Arial, sans-serif;
+  --font-mono: ui-monospace, monospace;
+
+  /* ─── animations ─── */
+  --animate-breathe:      breathe 7s ease-in-out infinite;
+  --animate-breathe-slow: breathe 15s ease-in-out infinite;
+  --animate-fade-up:      fade-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade-in:      fade-in 0.3s ease both;
+  --animate-slide-in:     slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-intro-enter:  intro-enter 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-intro-exit:   intro-exit 0.7s ease forwards;
+}
+
+/* ─── Keyframes ─────────────────────────────────────────────────────────────── */
+@keyframes breathe {
+  0%, 100% { transform: scale(1);    opacity: 0.85; }
+  50%       { transform: scale(2); opacity: 1;    }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+@keyframes intro-enter {
+  0%   { opacity: 0; transform: scale(0.96) translateY(8px); }
+  100% { opacity: 1; transform: scale(1)    translateY(0);   }
+}
+
+@keyframes intro-exit {
+  0%   { opacity: 1; transform: scale(1);    }
+  100% { opacity: 0; transform: scale(1.04); }
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────────── */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Inter", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
