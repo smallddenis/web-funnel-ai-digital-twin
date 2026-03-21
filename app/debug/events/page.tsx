@@ -45,6 +45,15 @@ export default function DebugEventsPage() {
         </button>
       </div>
 
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+            <p className="text-sm text-muted-foreground">Loading events...</p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-card-bg border border-card-border rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -58,13 +67,7 @@ export default function DebugEventsPage() {
               </tr>
             </thead>
             <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-foreground/50">
-                    Loading...
-                  </td>
-                </tr>
-              ) : events.length === 0 ? (
+              {events.length === 0 && !loading ? (
                 <tr>
                   <td colSpan={5} className="px-4 py-8 text-center text-foreground/50">
                     No events recorded yet. Complete the funnel to see events here.
