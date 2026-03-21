@@ -1,22 +1,24 @@
 # AI Digital Twin — Web Funnel
 
-A fullstack web funnel for an AI Digital Twin application built with Next.js 15, SQLite, and Tailwind CSS.
+A fullstack conversion funnel for an AI Digital Twin app built with Next.js 15, Neon PostgreSQL, Groq AI, and Tailwind CSS v4.
 
 ## Funnel Flow
 
-1. **Quiz** (5 steps) — Name, AI personality, therapy style, personal goal, self-reflection frequency
-2. **Email Capture** — Validated email collection
-3. **Chat Interface** — AI-powered conversational experience with your digital twin
-4. **AI Analysis** (after 5 messages) — Structured popup with stress level, themes, patterns, and recommendations
-5. **Paywall** — Subscription plans (demo, no real payments)
+1. **Intro** — Animated "take a deep breath" screen before the quiz
+2. **Quiz** (6 steps) — Name → Twin preview → Personality → Therapy style → Goal → Reflection frequency
+3. **Email Capture** — Validated email collection
+4. **Chat Interface** — AI-powered conversation with your digital twin
+5. **AI Analysis** (after 5 messages) — Popup with stress level, themes, patterns, and recommendations
+6. **Paywall** — Subscription plans (demo, no real payments)
 
 ## Tech Stack
 
 - **Next.js 15** (App Router) — fullstack React framework
 - **TypeScript** — type safety
-- **Tailwind CSS v4** — styling
-- **Drizzle ORM + SQLite** — lightweight persistent storage
-- **Claude API** (optional) — AI chat & analysis (falls back to deterministic responses)
+- **Tailwind CSS v4** — styling with custom CSS variables
+- **Radix UI + CVA** — accessible UI primitives and variant components
+- **Drizzle ORM + Neon** — serverless PostgreSQL
+- **Groq API** (`llama-3.3-70b-versatile`) — AI chat & analysis (falls back to deterministic responses)
 
 ## Getting Started
 
@@ -33,29 +35,38 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to start the funnel.
 
+## Environment Variables
+
+Create `.env.local`:
+
+```bash
+# Required — Neon PostgreSQL connection string
+DATABASE_URL=postgresql://user:password@ep-xxx.us-east-1.aws.neon.tech/dbname?sslmode=require
+
+# Optional — enables AI-powered chat (falls back to deterministic if missing)
+GROQ_API_KEY=your-groq-key-here
+```
+
 ## AI Chat
 
 The chat works in two modes:
 
-- **With Claude API**: Set `ANTHROPIC_API_KEY` in `.env.local` for real AI conversations
-- **Without API key**: Uses deterministic responses (fully functional, no API needed)
+- **With Groq API** — real AI conversations via `llama-3.3-70b-versatile`
+- **Without API key** — deterministic context-aware responses (fully functional)
 
-```bash
-# Optional: enable AI-powered chat
-echo "ANTHROPIC_API_KEY=your-key-here" > .env.local
-```
+After 5 messages the analysis popup triggers automatically, also with a deterministic fallback (keyword matching on stress/anxiety/worry signals).
 
 ## Event Tracking
 
-All funnel events are tracked in SQLite and viewable at `/debug/events`:
+All funnel events are stored in Neon PostgreSQL and viewable at `/debug/events`:
 
 | Event | Description |
 |-------|-------------|
 | `quiz_start` | User opens the quiz |
-| `quiz_submit` | User completes the quiz |
+| `quiz_submit` | User completes the quiz (payload: answers) |
 | `email_submitted` | User submits their email |
 | `chat_opened` | User enters the chat |
-| `message_sent` | User sends a chat message |
+| `message_sent` | User sends a chat message (payload: message count) |
 | `analysis_shown` | AI analysis popup is displayed |
 | `paywall_view` | User reaches the paywall |
 
@@ -63,17 +74,55 @@ All funnel events are tracked in SQLite and viewable at `/debug/events`:
 
 ```
 app/
-├── page.tsx              # Quiz (5-step funnel)
-├── email/page.tsx        # Email capture
-├── chat/page.tsx         # Chat interface + analysis popup
-├── paywall/page.tsx      # Paywall screen
-├── debug/events/page.tsx # Event log viewer
-├── api/
-│   ├── events/route.ts   # POST/GET events
-│   └── chat/route.ts     # Chat + analysis API
+├── page.tsx                  # Entry — renders QuizFeature
+├── layout.tsx                # Root layout with branding & decorative circles
+├── globals.css               # Tailwind v4 config, CSS variables, keyframes
+├── email/page.tsx            # Email capture
+├── chat/page.tsx             # Chat interface + analysis popup
+├── paywall/page.tsx          # Paywall screen
+├── debug/events/page.tsx     # Event log viewer
+└── api/
+    ├── chat/route.ts         # POST: chat messages & analysis (Groq)
+    └── events/route.ts       # POST/GET: event tracking (PostgreSQL)
+
+features/
+├── quiz/
+│   ├── QuizFeature.tsx       # Orchestrator with animated intro + step routing
+│   ├── useQuiz.ts            # Quiz state hook
+│   ├── constants.ts          # Personality / therapy / goal / frequency options
+│   └── steps/
+│       ├── NameStep.tsx
+│       ├── PreviewStep.tsx   # AI twin preview (after name)
+│       ├── ChoiceStep.tsx    # Reusable for personality, therapy, goal
+│       └── FrequencyStep.tsx
+├── email/
+│   ├── EmailFeature.tsx
+│   └── validateEmail.ts
+├── chat/
+│   ├── ChatFeature.tsx
+│   ├── AnalysisModal.tsx
+│   ├── ChatMessage.tsx
+│   └── TypingIndicator.tsx
+└── paywall/
+    ├── PaywallFeature.tsx
+    ├── PricingCard.tsx
+    └── constants.ts          # Plan definitions
+
+components/
+└── ui/
+    ├── button.tsx            # CVA-based button variants
+    ├── input.tsx
+    └── badge.tsx
+
+shared/
+├── lib/
+│   ├── session.ts            # UUID session ID (localStorage)
+│   └── track.ts              # Client-side event tracking
+└── ui/
+    └── DecorCircle.tsx       # Decorative breathing background circle
+
 lib/
-├── db.ts                 # Database connection
-├── schema.ts             # Drizzle schema
-├── session.ts            # Session ID management
-└── track.ts              # Client-side event tracking
+├── db.ts                     # Drizzle ORM + Neon connection
+├── schema.ts                 # Events table schema
+└── utils.ts                  # cn() helper (clsx + tailwind-merge)
 ```
