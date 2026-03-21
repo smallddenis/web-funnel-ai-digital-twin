@@ -1,6 +1,6 @@
 # AI Digital Twin — Web Funnel
 
-A fullstack conversion funnel for an AI Digital Twin app built with Next.js 15, Neon PostgreSQL, Groq AI, and Tailwind CSS v4.
+A fullstack conversion funnel for an AI Digital Twin app built with Next.js 16, Neon PostgreSQL, Groq AI, and Tailwind CSS v4.
 
 ## Funnel Flow
 
@@ -13,7 +13,7 @@ A fullstack conversion funnel for an AI Digital Twin app built with Next.js 15, 
 
 ## Tech Stack
 
-- **Next.js 15** (App Router) — fullstack React framework
+- **Next.js 16** (App Router) — fullstack React framework
 - **TypeScript** — type safety
 - **Tailwind CSS v4** — styling with custom CSS variables
 - **Radix UI + CVA** — accessible UI primitives and variant components
