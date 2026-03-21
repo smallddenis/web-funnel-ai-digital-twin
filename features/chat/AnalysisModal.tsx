@@ -50,7 +50,7 @@ export function AnalysisModal({ analysis, onContinue }: AnalysisModalProps) {
           </div>
 
           <div className="p-4 rounded-xl bg-accent/10 border border-accent/30">
-            <div className="text-sm text-accent mb-1">Key Recommendation</div>
+            <div className="text-sm font-bold mb-1">Key Recommendation</div>
             <p className="text-sm font-medium">{analysis.recommendation}</p>
           </div>
         </div>

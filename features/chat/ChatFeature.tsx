@@ -57,7 +57,7 @@ export function ChatFeature() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             placeholder="Type your message..."
-            className="flex-1 px-4 py-3 bg-input-bg border border-input-border rounded-xl text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary transition"
+            className="flex-1 px-4 py-3 bg-input-bg border border-input-border rounded-xl text-foreground placeholder:text-foreground/60 placeholder:font-semibold focus:outline-none focus:border-primary transition"
             disabled={loading || showAnalysis}
           />
           <button

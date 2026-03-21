@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { getSessionId } from "@/shared/lib/session";
 import { trackEvent } from "@/shared/lib/track";
 import { validateEmail } from "./validateEmail";
@@ -29,45 +31,48 @@ export function EmailFeature() {
   };
 
   return (
-    <div className="w-full max-w-lg">
-      <div className="bg-card-bg border border-card-border rounded-2xl p-8">
-        <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-        </div>
+    <div className="w-full max-w-md animate-[fade-up_0.45s_cubic-bezier(0.16,1,0.3,1)_both]">
+      {/* Icon */}
+      <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-10 shadow-[0_0_20px_rgba(58,124,255,0.15)]">
+        <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round"
+            d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+        </svg>
+      </div>
 
-        <h1 className="text-2xl font-bold mb-2 text-center">
-          {name ? `Great choices, ${name}!` : "Almost there!"}
-        </h1>
-        <p className="text-foreground/60 mb-6 text-center">
-          Enter your email to save your progress and start chatting with your AI twin.
-        </p>
+      <h1 className="text-[2.1rem] font-semibold leading-[1.2] tracking-[-0.02em] mb-3 text-foreground">
+        {name ? `Almost there, ${name}` : "Almost there"}
+      </h1>
+      <p className="text-muted-foreground text-[15px] mb-10 leading-relaxed">
+        Save your profile and unlock your AI twin.
+        No spam — ever.
+      </p>
 
-        <input
+      <div className="space-y-2 mb-5">
+        <label className="block text-[11px] font-medium text-muted-foreground uppercase tracking-[0.1em]">
+          Email address
+        </label>
+        <Input
           type="email"
           value={email}
           onChange={(e) => { setEmail(e.target.value); setError(""); }}
-          placeholder="your@email.com"
-          className="w-full px-4 py-3 bg-input-bg border border-input-border rounded-xl text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary transition"
+          placeholder="you@example.com"
           autoFocus
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+          className={error ? "border-destructive/50 focus-visible:border-destructive/70" : ""}
         />
-
-        {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
-
-        <button
-          onClick={handleSubmit}
-          disabled={!email.trim()}
-          className="w-full mt-6 px-6 py-3 bg-primary hover:bg-primary-hover disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium rounded-xl transition"
-        >
-          Continue to Chat
-        </button>
-
-        <p className="text-foreground/30 text-xs text-center mt-4">
-          We respect your privacy. No spam, ever.
-        </p>
+        {error && (
+          <p className="text-destructive/80 text-xs mt-1">{error}</p>
+        )}
       </div>
+
+      <Button className="w-full" onClick={handleSubmit} disabled={!email.trim()}>
+        Continue to my twin
+      </Button>
+
+      <p className="text-muted-foreground/50 text-xs text-center mt-5">
+        By continuing you agree to our Terms & Privacy Policy
+      </p>
     </div>
   );
 }

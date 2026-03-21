@@ -11,7 +11,8 @@ export function useQuiz() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<QuizData>({});
 
-  const totalSteps = 5;
+  // steps: name → preview → personality → therapy → goal → frequency
+  const totalSteps = 6;
   const progress = ((step + 1) / totalSteps) * 100;
 
   const setField = (field: keyof QuizData, value: string) => {
