@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { getSessionId } from "@/shared/lib/session";
-import { trackEvent } from "@/shared/lib/track";
-import type { ChatMessage, AnalysisResult } from "@/types";
+import { getSessionId } from "@/lib/session";
+import { trackEvent } from "@/lib/track";
+import type { ChatMessage, AnalysisResult } from "@/lib/types";
 
 const ANALYSIS_TRIGGER = 5;
 
@@ -56,10 +56,14 @@ export function useChat() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ messages: newMessages, analyze: true }),
         });
-        const data = await res.json();
-        setAnalysis(data);
-        setShowAnalysis(true);
-        trackEvent(getSessionId(), "analysis_shown");
+        if (!res.ok) {
+          console.error("Analysis request failed with status:", res.status);
+        } else {
+          const data = await res.json();
+          setAnalysis(data);
+          setShowAnalysis(true);
+          trackEvent(getSessionId(), "analysis_shown");
+        }
       } catch (e) {
         console.error("Analysis failed:", e);
       }
@@ -73,9 +77,13 @@ export function useChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: newMessages }),
       });
-      const data = await res.json();
-      setMessages([...newMessages, { role: "assistant", content: data.content }]);
-    } catch {
+      if (!res.ok) {
+        throw new Error(`Chat request failed with status: ${res.status}`);
+      }
+      const data = await res.json() as { content?: string };
+      setMessages([...newMessages, { role: "assistant", content: data.content ?? "I'm here to listen." }]);
+    } catch (e) {
+      console.error("Chat send failed:", e);
       setMessages([
         ...newMessages,
         { role: "assistant", content: "I'm having trouble connecting. Please try again." },
