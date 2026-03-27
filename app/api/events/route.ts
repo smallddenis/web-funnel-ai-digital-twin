@@ -8,7 +8,7 @@ import { desc } from "drizzle-orm";
 const eventSchema = z.object({
   sessionId: z.string().uuid("sessionId must be a valid UUID"),
   eventType: z.string().min(1).max(50),
-  payload: z.record(z.unknown()).optional(),
+  payload: z.record(z.string(), z.unknown()).optional(),
 });
 
 export async function POST(req: NextRequest) {
